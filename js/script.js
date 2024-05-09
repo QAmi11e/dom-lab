@@ -43,7 +43,7 @@ topMenuEl.classList.add("flex-around");
 
 //Task 3.1
 menuLinks.forEach(function(link){
-    const linkEl = document.createElement('a');
+    const linkEl = document.createElement("a");
     linkEl.setAttribute("href", link.href);
     linkEl.innerText = link.text;
     topMenuEl.appendChild(linkEl);
@@ -69,15 +69,98 @@ subMenuEl.style.position = "absolute";
 subMenuEl.style.top = "0";
 
 //Task 5.1
-const topMenuLinks = document.querySelectorAll("#topMenu a");
+const topMenuLinks = document.querySelectorAll("a");
 let showingSubMenu = false;
 
 //Task 5.2
 topMenuEl.addEventListener("click", function(event){
     event.preventDefault();
     const selected = event.target;
-    if(selected.tagName !== "A") return; //a -> A, should"ve read that tagName page a lil more thoroughly smh
-    console.log(selected.innerText);
-    }//end of function
+
+    if(selected.tagName !== "A") {
+        return;
+    }
+    console.log(selected.innerText); //logs the name of the link 
+
+    // > Task 5.3
+    if (selected.classList.contains("active")) {
+        selected.classList.remove("active");
+        showingSubMenu = false;
+        subMenuEl.style.top = "0";
+        return;
+      }
+
+    // > Task 5.4 
+    for (let i = 0; i < topMenuLinks.length; i++) {
+        topMenuLinks[i].classList.remove("active");
+      }
+
+    // > Task 5.5 
+    selected.classList.add("active");
+
+     // > Task 5.6 -> Had to look this one up
+    const anchorName = selected.textContent;
+    const menuLink = menuLinks.find((link) => {
+    return link.text === anchorName; 
+    });
+    
+    if (menuLink === undefined) {
+        return;
+    }
+    
+    if (menuLink.subLinks) {
+        showingSubMenu = true;
+    } else {
+        showingSubMenu = false;
+    }
+
+  // > Task 5.7 & 5.8 -> Had to look this one up
+  const buildSubMenu = (sublinks) => {
+    subMenuEl.innerHTML = "";
+    for (let i = 0; i < sublinks.length; i++) {
+      const newAnchor = document.createElement("a");
+      newAnchor.setAttribute("href", sublinks[i].href);
+      newAnchor.textContent = sublinks[i].text;
+      subMenuEl.append(newAnchor);
+    }
+  };
+
+  if (showingSubMenu) {
+    buildSubMenu(menuLink.subLinks);
+    subMenuEl.style.top = "100%";
+  } else {
+    subMenuEl.style.top = "0";
+  }
+
+  if (anchorName === "about") {
+    mainEl.innerHTML = "<h1>about</h1>";
+  }
+
+    }//end of Event Listener's callback function
 ); //end of eventListener
+
+// ---------------------------- SUBMENU ---------------------
+// > Task 6.0
+subMenuEl.addEventListener("click", (event) => {
+    event.preventDefault();
+    const selected = event.target;
+    if (selected.tagName !== "A") {
+      return;
+    }
+    console.log(selected.textContent);
+  
+    // > Task 6.1
+    showingSubMenu = false;
+    subMenuEl.style.top = "0";
+  
+    // > Task 6.2
+    for (let i = 0; i < topMenuLinks.length; i++) {
+      topMenuLinks[i].classList.remove("active");
+    }
+  
+    // > Task 6.3
+    mainEl.innerHTML = `<h1>${selected.textContent}</h1>`;
+  });
+  
+
 
